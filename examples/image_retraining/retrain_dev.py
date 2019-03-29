@@ -938,7 +938,7 @@ def add_jpeg_decoding(module_spec):
       # Convert from full range of uint8 to range [0,1] of float32.
   except Exception as e:
       print("Failed to add to archive: {0}".format(str(e)))
-      continue
+      pass
       decoded_image_as_float = tf.image.convert_image_dtype(decoded_image,
                                                             tf.float32)
       decoded_image_4d = tf.expand_dims(decoded_image_as_float, 0)
