@@ -578,7 +578,8 @@ def get_random_distorted_bottlenecks(
                                 category)
     if not tf.gfile.Exists(image_path):
       tf.logging.fatal('File does not exist %s', image_path)
-    jpeg_data = tf.gfile.FastGFile(image_path, 'rb').read()
+
+    jpeg_data = tf.gfile.GFile(image_path, 'rb').read()
     # Note that we materialize the distorted_image_data as a numpy array before
     # sending running inference on the image. This involves 2 memory copies and
     # might be optimized in other implementations.
@@ -932,13 +933,13 @@ def add_jpeg_decoding(module_spec):
 
   input_height, input_width = hub.get_expected_image_size(module_spec)
   input_depth = hub.get_num_image_channels(module_spec)
-  jpeg_data = tf.placeholder(tf.string, name='DecodeJPGInput')
   try:
-      decoded_image = tf.image.decode_jpeg(jpeg_data, channels=input_depth)
-      # Convert from full range of uint8 to range [0,1] of float32.
+      jpeg_data = tf.placeholder(tf.string, name='DecodeJPGInput')
   except Exception as e:
-      print("Failed to add to archive: {0}".format(str(e)))
+      print("Failed to open image: {0}".format(str(e)))
       pass
+  decoded_image = tf.image.decode_jpeg(jpeg_data, channels=input_depth)
+      # Convert from full range of uint8 to range [0,1] of float32.
   decoded_image_as_float = tf.image.convert_image_dtype(decoded_image,
                                                         tf.float32)
   decoded_image_4d = tf.expand_dims(decoded_image_as_float, 0)
