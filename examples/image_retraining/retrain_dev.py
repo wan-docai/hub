@@ -944,7 +944,6 @@ def add_jpeg_decoding(module_spec):
                                                resize_shape_as_int)
   except Exception as e:
       print("Failed to add to archive: {0}".format(str(e)))
-      continue
   return jpeg_data, resized_image
 
 
